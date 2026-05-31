@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Test Page</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #0f172a;
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Welcome to Your WordPress Mockup Site</h1>
+        <p>This page simulates a standard website where your widget is embedded.</p>
+    </header>
+
+    <main>
+        <h2>Test the RAG Chatbot Widget</h2>
+        <p>You should see a floating chat bubble in the bottom right corner of this page. Click it to open the chat
+            interface.</p>
+
+        <h3>How it works:</h3>
+        <ul>
+            <li>The script tag below injects <code>widget.js</code> from your Next.js server (running on port 3000).
+            </li>
+            <li>The <code>data-api-url</code> attribute tells the widget where your FastAPI backend is running (port
+                8000).</li>
+            <li>Once clicked, the widget opens an iframe pointing to the Next.js <code>/widget-iframe</code> route.</li>
+        </ul>
+
+        <p>Try asking a question about the content you indexed!</p>
+    </main>
+
+    <!-- RAG Chatbot Widget Script -->
+    <script src="http://localhost:3000/widget.js" data-api-url="http://localhost:8000">
+    </script>
+
+</body>
+
+</html>
