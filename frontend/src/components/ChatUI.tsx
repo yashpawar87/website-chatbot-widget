@@ -188,23 +188,23 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
         
         {/* Onboarding Empty State */}
         {messages.length === 0 && (
-          <div className="h-full flex flex-col items-center justify-start text-center px-2 animate-in fade-in duration-500 pb-10">
+          <div className="flex flex-col items-center justify-start text-center px-2 animate-in fade-in duration-500 pb-10 min-h-full">
             <div className="w-16 h-16 bg-[#fff0ed] rounded-full flex items-center justify-center mb-4 shrink-0">
                <MessageSquareText size={32} className="text-[#e34c26]" />
             </div>
             
-            <p className="text-[15px] leading-relaxed text-slate-600 mb-6 bg-white p-4 rounded-2xl border border-[#f8d3cc] shadow-sm text-left">
+            <p className="text-[15px] leading-relaxed text-slate-600 mb-6 bg-white p-4 rounded-2xl border border-[#f8d3cc] shadow-sm text-left shrink-0">
               {ONBOARDING_DATA.greeting}
             </p>
             
-            <div className="w-full max-w-full overflow-x-auto pb-2 flex gap-2 scrollbar-hide justify-center mb-4">
+            <div className="w-full max-w-full overflow-x-auto pb-3 pt-1 flex gap-2 scrollbar-hide justify-start sm:justify-center mb-4 shrink-0 px-1">
               {ONBOARDING_DATA.categories.map((category, idx) => {
                 const isSelected = expandedCategory === idx;
                 return (
                   <button
                     key={idx}
                     onClick={() => setExpandedCategory(idx)}
-                    className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all shadow-sm ${
+                    className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all shadow-sm shrink-0 ${
                       isSelected 
                         ? 'bg-[#e34c26] text-white border border-[#e34c26]' 
                         : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-[#f8d3cc]'
@@ -217,7 +217,7 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
               })}
             </div>
             
-            <div className="w-full max-w-sm space-y-2 animate-in slide-in-from-bottom-2 duration-300">
+            <div className="w-full max-w-sm space-y-2 animate-in slide-in-from-bottom-2 duration-300 shrink-0">
                {ONBOARDING_DATA.categories[expandedCategory].options.map((opt, optIdx) => (
                   <button
                     key={optIdx}
