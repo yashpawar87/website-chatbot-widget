@@ -12,5 +12,6 @@ class ChatService:
         
         return ChatResponse(
             answer=result["answer"],
-            sources=sources
+            sources=sources,
+            quick_replies=result.get("quick_replies", [])
         )

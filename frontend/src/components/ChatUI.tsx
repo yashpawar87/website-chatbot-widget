@@ -66,8 +66,8 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
   
   // State for toggling sources accordions (keyed by message index)
   const [expandedSources, setExpandedSources] = useState<Record<number, boolean>>({});
-  // State for the onboarding category accordion
-  const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
+  // State for the onboarding category tab (default to the first tab)
+  const [expandedCategory, setExpandedCategory] = useState<number>(0);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -97,7 +97,7 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
     if (window.confirm("Are you sure you want to clear the conversation?")) {
       setMessages([]);
       setExpandedSources({});
-      setExpandedCategory(null);
+      setExpandedCategory(0);
       setError(null);
     }
   };
@@ -197,41 +197,36 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
               {ONBOARDING_DATA.greeting}
             </p>
             
-            <div className="w-full max-w-sm space-y-3">
+            <div className="w-full max-w-full overflow-x-auto pb-2 flex gap-2 scrollbar-hide justify-center mb-4">
               {ONBOARDING_DATA.categories.map((category, idx) => {
-                const isExpanded = expandedCategory === idx;
+                const isSelected = expandedCategory === idx;
                 return (
-                  <div key={idx} className="bg-white border border-slate-200 rounded-xl overflow-hidden transition-all shadow-sm">
-                    <button
-                      onClick={() => setExpandedCategory(isExpanded ? null : idx)}
-                      className="w-full flex items-center p-3 sm:p-4 hover:bg-slate-50 transition-colors text-left"
-                    >
-                      <span className="text-2xl mr-3 sm:mr-4 shrink-0">{category.icon}</span>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-slate-800 text-sm sm:text-[15px]">{category.title}</h3>
-                        <p className="text-xs text-slate-500 truncate mt-0.5">{category.description}</p>
-                      </div>
-                      <div className="ml-2 text-slate-400 shrink-0">
-                        {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                      </div>
-                    </button>
-                    
-                    {isExpanded && (
-                      <div className="bg-slate-50 border-t border-slate-100 p-2 sm:p-3 space-y-2 animate-in slide-in-from-top-2 duration-200">
-                        {category.options.map((opt, optIdx) => (
-                          <button
-                            key={optIdx}
-                            onClick={() => submitQuestion(opt)}
-                            className="w-full text-left p-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 hover:border-[#e34c26] hover:text-[#e34c26] transition-colors shadow-sm active:scale-[0.98]"
-                          >
-                            {opt}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <button
+                    key={idx}
+                    onClick={() => setExpandedCategory(idx)}
+                    className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all shadow-sm ${
+                      isSelected 
+                        ? 'bg-[#e34c26] text-white border border-[#e34c26]' 
+                        : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-[#f8d3cc]'
+                    }`}
+                  >
+                    <span className="mr-2">{category.icon}</span>
+                    {category.title}
+                  </button>
                 );
               })}
+            </div>
+            
+            <div className="w-full max-w-sm space-y-2 animate-in slide-in-from-bottom-2 duration-300">
+               {ONBOARDING_DATA.categories[expandedCategory].options.map((opt, optIdx) => (
+                  <button
+                    key={optIdx}
+                    onClick={() => submitQuestion(opt)}
+                    className="w-full text-left p-3.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 hover:border-[#e34c26] hover:text-[#e34c26] hover:shadow-md transition-all active:scale-[0.98]"
+                  >
+                    {opt}
+                  </button>
+               ))}
             </div>
           </div>
         )}
