@@ -19,24 +19,44 @@ interface ChatUIProps {
   isWidget?: boolean;
 }
 
-// Starter Categories configuration
-const STARTER_CATEGORIES = [
-  {
-    title: "Services & Pricing",
-    icon: "💰",
-    question: "Can you tell me about your services and pricing?"
-  },
-  {
-    title: "About Us",
-    icon: "🏢",
-    question: "What is the background and mission of the company?"
-  },
-  {
-    title: "Support & Contact",
-    icon: "📞",
-    question: "How do I get in touch with human support?"
-  }
-];
+// Onboarding Data configuration
+const ONBOARDING_DATA = {
+  greeting: "Hello! Welcome to Baellchen Technology. I can help you explore our advanced engineering solutions, check open career opportunities, or connect with our team. What brings you to our site today?",
+  categories: [
+    {
+      title: "Explore Tech Solutions & Services",
+      icon: "🛠️",
+      description: "For clients & engineers evaluating our domain expertise.",
+      options: [
+        "What industrial automation and IoT solutions do you provide?",
+        "Tell me about your AI, Deep Learning, and Computer Vision expertise.",
+        "Do you offer automotive services like ADAS and ECU development?",
+        "What solutions do you have for Biomedical Engineering or Solar Inverters?"
+      ]
+    },
+    {
+      title: "Careers & Job Opportunities",
+      icon: "💼",
+      description: "For job seekers and graduates looking to join our Pune office.",
+      options: [
+        "Are there any job openings for Junior Software Developers?",
+        "What are the requirements for the Junior Software Tester role?",
+        "How do I apply and where should I send my resume?"
+      ]
+    },
+    {
+      title: "Partner With Us & Company Info",
+      icon: "🤝",
+      description: "For business prospects evaluating a partnership or quote.",
+      options: [
+        "How can I get a quick quote for a project?",
+        "How long will it take for someone to contact me after I send a request?",
+        "Where is your office located, and what are your main contact emails?",
+        "Do you operate as a service-based or a product-based company?"
+      ]
+    }
+  ]
+};
 
 export default function ChatUI({ isWidget = false }: ChatUIProps) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -46,6 +66,8 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
   
   // State for toggling sources accordions (keyed by message index)
   const [expandedSources, setExpandedSources] = useState<Record<number, boolean>>({});
+  // State for the onboarding category accordion
+  const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -75,6 +97,7 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
     if (window.confirm("Are you sure you want to clear the conversation?")) {
       setMessages([]);
       setExpandedSources({});
+      setExpandedCategory(null);
       setError(null);
     }
   };
@@ -165,25 +188,50 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
         
         {/* Onboarding Empty State */}
         {messages.length === 0 && (
-          <div className="h-full flex flex-col items-center justify-center text-center px-4 animate-in fade-in duration-500">
-            <div className="w-16 h-16 bg-[#fff0ed] rounded-full flex items-center justify-center mb-6">
+          <div className="h-full flex flex-col items-center justify-start text-center px-2 animate-in fade-in duration-500 pb-10">
+            <div className="w-16 h-16 bg-[#fff0ed] rounded-full flex items-center justify-center mb-4 shrink-0">
                <MessageSquareText size={32} className="text-[#e34c26]" />
             </div>
-            <h2 className="text-2xl font-semibold text-slate-800 mb-2">Welcome! 👋</h2>
-            <p className="text-slate-500 mb-8 max-w-sm">I'm here to help you navigate our website and find the information you need.</p>
+            
+            <p className="text-[15px] leading-relaxed text-slate-600 mb-6 bg-white p-4 rounded-2xl border border-[#f8d3cc] shadow-sm text-left">
+              {ONBOARDING_DATA.greeting}
+            </p>
             
             <div className="w-full max-w-sm space-y-3">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider text-left pl-2 mb-2">Select a topic to start</p>
-              {STARTER_CATEGORIES.map((category, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => submitQuestion(category.question)}
-                  className="w-full flex items-center p-4 bg-white border border-slate-200 rounded-xl hover:border-[#e34c26] hover:shadow-md transition-all group text-left"
-                >
-                  <span className="text-2xl mr-4">{category.icon}</span>
-                  <span className="font-medium text-slate-700 group-hover:text-[#e34c26] transition-colors">{category.title}</span>
-                </button>
-              ))}
+              {ONBOARDING_DATA.categories.map((category, idx) => {
+                const isExpanded = expandedCategory === idx;
+                return (
+                  <div key={idx} className="bg-white border border-slate-200 rounded-xl overflow-hidden transition-all shadow-sm">
+                    <button
+                      onClick={() => setExpandedCategory(isExpanded ? null : idx)}
+                      className="w-full flex items-center p-3 sm:p-4 hover:bg-slate-50 transition-colors text-left"
+                    >
+                      <span className="text-2xl mr-3 sm:mr-4 shrink-0">{category.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-slate-800 text-sm sm:text-[15px]">{category.title}</h3>
+                        <p className="text-xs text-slate-500 truncate mt-0.5">{category.description}</p>
+                      </div>
+                      <div className="ml-2 text-slate-400 shrink-0">
+                        {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                      </div>
+                    </button>
+                    
+                    {isExpanded && (
+                      <div className="bg-slate-50 border-t border-slate-100 p-2 sm:p-3 space-y-2 animate-in slide-in-from-top-2 duration-200">
+                        {category.options.map((opt, optIdx) => (
+                          <button
+                            key={optIdx}
+                            onClick={() => submitQuestion(opt)}
+                            className="w-full text-left p-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 hover:border-[#e34c26] hover:text-[#e34c26] transition-colors shadow-sm active:scale-[0.98]"
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
