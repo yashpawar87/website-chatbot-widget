@@ -7,14 +7,22 @@ Rules:
 1. Rely strictly on the facts mentioned in the context below. Do NOT assume, extrapolate, or bring in outside knowledge.
 2. If the context does not contain the answer, politely state: "I'm sorry, but I couldn't find information about that on the website."
 3. Keep your response concise, structured, and helpful. Use markdown lists if appropriate.
-4. Do not mention "Based on the context" or "According to the provided text", just answer the question naturally.
+4. Do not mention "Based on the context", just answer naturally.
+5. Generate 2-3 logical follow-up questions for the user as `quick_replies`. 
+   CRITICAL: ONLY suggest follow-up questions if you are 100% certain the answer to that question exists within the provided context. Do not invent questions about features/services not mentioned here.
+
+You MUST respond in valid JSON format matching this exact structure:
+{{
+  "answer": "your markdown formatted answer here",
+  "quick_replies": ["Follow up 1?", "Follow up 2?"]
+}}
 
 Context:
 {context}
 
 Question: {question}
 
-Answer:"""
+JSON Response:"""
 
 QA_PROMPT = PromptTemplate(
     template=QA_PROMPT_TEMPLATE,

@@ -1,7 +1,7 @@
 import logging
 from langchain_groq import ChatGroq
 from langchain_core.runnables import RunnablePassthrough
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
 from ai.config import ai_config
 from ai.rag.retriever import get_retriever
 from ai.rag.prompts import QA_PROMPT, CONDENSE_QUESTION_PROMPT
@@ -67,17 +67,31 @@ def answer_question(question: str, history: list[dict] = None) -> dict:
             })
             seen_urls.add(url)
     
-    # Create final answer chain
+    # Create final answer chain expecting JSON
     chain = (
         {"context": lambda x: format_docs(docs), "question": RunnablePassthrough()}
         | QA_PROMPT
         | llm
-        | StrOutputParser()
+        | JsonOutputParser()
     )
     
-    answer = chain.invoke(question)
+    try:
+        # LLM returns a dictionary now
+        response_data = chain.invoke(question)
+        answer = response_data.get("answer", "I'm sorry, I couldn't process that response.")
+        quick_replies = response_data.get("quick_replies", [])
+    except Exception as e:
+        logger.error(f"Failed to parse LLM JSON: {e}")
+        # Fallback if LLM outputs invalid JSON or hallucinates
+        answer = "I apologize, but I encountered an error formatting my response."
+        quick_replies = []
+        
+    # Robust Fallback Quick Replies if LLM fails to generate them
+    if not quick_replies or len(quick_replies) == 0:
+        quick_replies = ["Can I speak to a human?", "What services do you offer?"]
     
     return {
         "answer": answer,
-        "sources": sources
+        "sources": sources,
+        "quick_replies": quick_replies
     }
