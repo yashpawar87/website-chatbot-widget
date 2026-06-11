@@ -241,19 +241,19 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
             
             {selectedCategory === null ? (
               // Step 1: Main Categories
-              <div className="w-full max-w-sm space-y-3 animate-in slide-in-from-bottom-2 duration-300 shrink-0">
+              <div className="w-full max-w-sm space-y-2.5 animate-in slide-in-from-bottom-2 duration-300 shrink-0">
                 {ONBOARDING_DATA.categories.map((category, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedCategory(idx)}
-                    className="w-full flex items-center p-4 bg-white border border-slate-200 rounded-xl text-left hover:border-[#e34c26] hover:shadow-md transition-all group active:scale-[0.98]"
+                    className="w-full flex items-center p-3 bg-white border border-slate-200 rounded-xl text-left hover:border-[#e34c26] hover:shadow-md transition-all group active:scale-[0.98]"
                   >
-                    <div className="text-2xl mr-3 bg-slate-50 w-12 h-12 rounded-full flex items-center justify-center shrink-0 group-hover:bg-[#fff0ed] transition-colors shadow-sm border border-slate-100 group-hover:border-[#f8d3cc]">
+                    <div className="text-xl mr-3 bg-slate-50 w-10 h-10 rounded-full flex items-center justify-center shrink-0 group-hover:bg-[#fff0ed] transition-colors shadow-sm border border-slate-100 group-hover:border-[#f8d3cc]">
                       {category.icon}
                     </div>
                     <div className="flex flex-col">
-                      <span className="font-semibold text-[15px] text-slate-800 group-hover:text-[#e34c26] transition-colors">{category.title}</span>
-                      <span className="text-xs text-slate-500 mt-0.5 leading-snug">{category.description}</span>
+                      <span className="font-semibold text-[14px] text-slate-800 group-hover:text-[#e34c26] transition-colors">{category.title}</span>
+                      <span className="text-[11px] text-slate-500 mt-0.5 leading-snug">{category.description}</span>
                     </div>
                   </button>
                 ))}
