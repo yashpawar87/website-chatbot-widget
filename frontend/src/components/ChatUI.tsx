@@ -309,6 +309,11 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
                   <div className="w-6 h-6 relative overflow-hidden rounded-full shrink-0 border border-slate-100">
                     <Image src="/company_logo.png" alt="Avatar" fill className="object-cover" />
                   </div>
+                  <span className="text-xs text-slate-500">
+                    Baellchen Technology {formatTime(msg.timestamp)}
+                  </span>
+                </div>
+                
                 <div className="w-full flex flex-col gap-2">
                   {/* Assistant Body Container */}
                   <div className="bg-[#fcfcfc] border border-slate-100 rounded-2xl p-5 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.03)] w-full">
