@@ -91,7 +91,7 @@ def answer_question(question: str, history: list[dict] = None) -> dict:
         quick_replies = ["Can I speak to a human?", "What services do you offer?"]
         
     # Do not cite sources if the LLM could not find the answer in the context
-    if "couldn't find information" in answer.lower() or "encountered an error" in answer.lower():
+    if "couldn't find a reliable answer" in answer.lower() or "encountered an error" in answer.lower() or "couldn't find information" in answer.lower():
         sources = []
     
     return {

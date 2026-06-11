@@ -309,17 +309,12 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
                   <div className="w-6 h-6 relative overflow-hidden rounded-full shrink-0 border border-slate-100">
                     <Image src="/company_logo.png" alt="Avatar" fill className="object-cover" />
                   </div>
-                  <span className="text-xs text-slate-500">
-                    Baellchen Technology {formatTime(msg.timestamp)}
-                  </span>
-                </div>
-                
-                <div className="w-full flex flex-col gap-3">
+                <div className="w-full flex flex-col gap-2">
                   {/* Assistant Body Container */}
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] w-full">
-                    {/* AI Assistant Pill */}
-                    <div className="mb-3">
-                      <span className="px-2 py-1 bg-slate-200/50 text-slate-500 text-[10px] font-bold uppercase tracking-wider rounded border border-slate-200/60">
+                  <div className="bg-[#fcfcfc] border border-slate-100 rounded-2xl p-5 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.03)] w-full">
+                    {/* AI Assistant Label */}
+                    <div className="mb-2">
+                      <span className="text-[11px] font-semibold text-slate-400">
                         AI Assistant
                       </span>
                     </div>
@@ -366,40 +361,50 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
 
                   {/* Action Buttons & Quick Replies (Only show for the very last assistant message) */}
                   {msg.role === "assistant" && idx === messages.length - 1 && !isLoading && (
-                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 w-full bg-white border border-slate-200 rounded-2xl p-4 shadow-sm mt-1">
-                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 block">Next steps</span>
+                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 w-full bg-white/40 border border-slate-200/60 rounded-xl p-3 shadow-sm mt-1">
+                      <span className="text-[12px] font-medium text-slate-600 mb-3 block text-center">Need help from our team or want to keep exploring?</span>
                       
                       {/* Fixed Action Buttons */}
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-col sm:flex-row gap-2 w-full">
                         <a
                           href="https://baellchen.com/contact/"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-full px-4 py-2.5 bg-[#e34c26] text-white text-sm font-semibold rounded-xl hover:bg-[#c94120] transition-all active:scale-[0.98] text-center shadow-sm"
+                          className="flex-1 px-4 py-2.5 bg-[#e34c26]/90 text-white text-sm font-semibold rounded-xl hover:bg-[#e34c26] transition-all active:scale-[0.98] text-center shadow-sm"
                         >
                            Contact Us
                         </a>
                         
-                        {!expandedReplies[idx] && msg.quickReplies && msg.quickReplies.length > 0 && (
-                          <button
-                            onClick={() => toggleReplies(idx)}
-                            className="w-full px-4 py-2.5 bg-white border border-slate-200 text-slate-600 text-sm font-medium rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-[0.98]"
-                          >
-                            Explore related questions
-                          </button>
+                        {(!msg.sources || msg.sources.length === 0) ? (
+                          msg.quickReplies && msg.quickReplies.length > 0 ? null : (
+                            <button
+                              onClick={() => inputRef.current?.focus()}
+                              className="flex-1 px-4 py-2.5 bg-white border border-slate-200 text-slate-600 text-sm font-medium rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm active:scale-[0.98]"
+                            >
+                              Ask in a different way
+                            </button>
+                          )
+                        ) : (
+                          !expandedReplies[idx] && msg.quickReplies && msg.quickReplies.length > 0 && (
+                            <button
+                              onClick={() => toggleReplies(idx)}
+                              className="flex-1 px-4 py-2.5 bg-white border border-slate-200 text-slate-600 text-sm font-medium rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-[0.98] shadow-sm"
+                            >
+                              Explore related questions
+                            </button>
+                          )
                         )}
                       </div>
 
                       {/* LLM Generated Quick Replies */}
-                      {expandedReplies[idx] && msg.quickReplies && msg.quickReplies.length > 0 && (
-                        <div className="flex flex-col gap-2 pt-3 mt-1 border-t border-slate-100 animate-in slide-in-from-top-2 duration-300">
-                          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Select a follow-up</span>
-                          <div className="flex flex-col gap-2 w-full">
+                      {(expandedReplies[idx] || (!msg.sources || msg.sources.length === 0)) && msg.quickReplies && msg.quickReplies.length > 0 && (
+                        <div className="flex flex-col gap-2 pt-3 mt-2 border-t border-slate-100/60 animate-in slide-in-from-top-2 duration-300">
+                          <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full">
                             {msg.quickReplies.map((reply, i) => (
                               <button
                                 key={i}
                                 onClick={() => submitQuestion(reply)}
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 text-slate-700 text-sm font-medium rounded-xl hover:bg-white hover:border-[#e34c26] hover:text-[#e34c26] transition-all shadow-[0_1px_2px_rgba(0,0,0,0.02)] active:scale-[0.98] text-left"
+                                className="w-full sm:flex-1 px-3 py-2 bg-slate-50 border border-slate-200 text-slate-700 text-[13px] font-medium rounded-xl hover:bg-white hover:border-[#e34c26]/40 hover:text-[#e34c26] transition-all shadow-[0_1px_2px_rgba(0,0,0,0.02)] active:scale-[0.98] text-left"
                               >
                                 {reply}
                               </button>
