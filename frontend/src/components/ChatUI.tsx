@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Menu, RotateCw, Minus, ArrowRight, ChevronDown, ChevronUp, ArrowLeft } from "lucide-react";
+import { Send, RotateCw, Minus, ArrowRight, ChevronDown, ChevronUp, ArrowLeft } from "lucide-react";
 import Image from "next/image";
 
 interface Source {
@@ -188,10 +188,6 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 z-10 rounded-t-xl shrink-0">
         <div className="flex items-center gap-3">
-          <button className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-md transition-colors">
-            <Menu size={20} strokeWidth={1.5} />
-          </button>
-          
           <div className="flex items-center gap-2">
             <div className="relative w-6 h-6 overflow-hidden rounded-full border border-slate-100">
               <Image 
