@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Menu, RotateCw, Minus, Info, ArrowRight, ChevronDown, ChevronUp, Bot, ExternalLink } from "lucide-react";
+import { Send, Menu, RotateCw, Minus, ArrowRight, ChevronDown, ChevronUp, ArrowLeft } from "lucide-react";
 import Image from "next/image";
 
 interface Source {
@@ -75,8 +75,8 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
   const [expandedSources, setExpandedSources] = useState<Record<number, boolean>>({});
   // State for toggling suggested quick replies
   const [expandedReplies, setExpandedReplies] = useState<Record<number, boolean>>({});
-  // State for the onboarding category tab (default to the first tab)
-  const [expandedCategory, setExpandedCategory] = useState<number>(0);
+  // State for the two-step onboarding category selection (null means show main menu)
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -114,7 +114,7 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
       setMessages([]);
       setExpandedSources({});
       setExpandedReplies({});
-      setExpandedCategory(0);
+      setSelectedCategory(null);
       setError(null);
     }
   };
@@ -235,42 +235,57 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
             <div className="w-16 h-16 relative overflow-hidden rounded-full mb-4 shrink-0 border border-slate-100 shadow-sm">
                <Image src="/company_logo.png" alt="Logo" fill className="object-cover" />
             </div>
-            
-            <p className="text-[15px] leading-relaxed text-slate-700 mb-8 max-w-lg text-center shrink-0">
+            <p className="text-[15px] leading-relaxed text-slate-600 mb-6 bg-white p-4 rounded-2xl border border-[#f8d3cc] shadow-sm text-left shrink-0">
               {ONBOARDING_DATA.greeting}
             </p>
             
-            <div className="w-full max-w-full overflow-x-auto pb-3 pt-1 flex gap-2 scrollbar-hide justify-start sm:justify-center mb-4 shrink-0 px-1">
-              {ONBOARDING_DATA.categories.map((category, idx) => {
-                const isSelected = expandedCategory === idx;
-                return (
+            {selectedCategory === null ? (
+              // Step 1: Main Categories
+              <div className="w-full max-w-sm space-y-3 animate-in slide-in-from-bottom-2 duration-300 shrink-0">
+                {ONBOARDING_DATA.categories.map((category, idx) => (
                   <button
                     key={idx}
-                    onClick={() => setExpandedCategory(idx)}
-                    className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all shrink-0 ${
-                      isSelected 
-                        ? 'bg-blue-600 text-white' 
-                        : 'bg-white border border-slate-300 text-slate-600 hover:bg-slate-50'
-                    }`}
+                    onClick={() => setSelectedCategory(idx)}
+                    className="w-full flex items-center p-4 bg-white border border-slate-200 rounded-xl text-left hover:border-[#e34c26] hover:shadow-md transition-all group active:scale-[0.98]"
                   >
-                    <span className="mr-2">{category.icon}</span>
-                    {category.title}
+                    <div className="text-2xl mr-3 bg-slate-50 w-12 h-12 rounded-full flex items-center justify-center shrink-0 group-hover:bg-[#fff0ed] transition-colors shadow-sm border border-slate-100 group-hover:border-[#f8d3cc]">
+                      {category.icon}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-[15px] text-slate-800 group-hover:text-[#e34c26] transition-colors">{category.title}</span>
+                      <span className="text-xs text-slate-500 mt-0.5 leading-snug">{category.description}</span>
+                    </div>
                   </button>
-                );
-              })}
-            </div>
-            
-            <div className="w-full max-w-md space-y-2 animate-in slide-in-from-bottom-2 duration-300 shrink-0">
-               {ONBOARDING_DATA.categories[expandedCategory].options.map((opt, optIdx) => (
-                  <button
-                    key={optIdx}
-                    onClick={() => submitQuestion(opt)}
-                    className="w-full text-left p-4 bg-white border border-slate-200 rounded-lg text-[15px] text-slate-700 hover:border-blue-500 hover:text-blue-600 hover:shadow-sm transition-all"
+                ))}
+              </div>
+            ) : (
+              // Step 2: Sub-Questions
+              <div className="w-full max-w-sm flex flex-col animate-in slide-in-from-right-4 duration-300 shrink-0">
+                <div className="flex items-center justify-between mb-4 px-1">
+                  <button 
+                    onClick={() => setSelectedCategory(null)}
+                    className="text-sm text-slate-500 hover:text-[#e34c26] flex items-center gap-1 font-medium transition-colors bg-white px-3 py-1.5 rounded-full border border-slate-200 hover:border-[#f8d3cc] shadow-sm"
                   >
-                    {opt}
+                    <ArrowLeft size={16} /> Back
                   </button>
-               ))}
-            </div>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider truncate ml-2">
+                     {ONBOARDING_DATA.categories[selectedCategory].icon} {ONBOARDING_DATA.categories[selectedCategory].title}
+                  </span>
+                </div>
+                
+                <div className="space-y-2">
+                   {ONBOARDING_DATA.categories[selectedCategory].options.map((opt, optIdx) => (
+                      <button
+                        key={optIdx}
+                        onClick={() => submitQuestion(opt)}
+                        className="w-full text-left p-3.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 hover:border-[#e34c26] hover:text-[#e34c26] hover:shadow-md transition-all active:scale-[0.98]"
+                      >
+                        {opt}
+                      </button>
+                   ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
