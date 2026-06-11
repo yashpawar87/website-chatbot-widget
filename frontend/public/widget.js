@@ -49,7 +49,6 @@
     // The toggle button
     const toggleBtn = document.createElement('button');
     const closedIconHTML = `<img src="${widgetBaseUrl}/chatbot_logo.png" alt="Chat" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`;
-    const openIconHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
     toggleBtn.innerHTML = closedIconHTML;
     toggleBtn.style.width = '64px';
     toggleBtn.style.height = '64px';
@@ -65,11 +64,11 @@
     toggleBtn.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s ease';
 
     toggleBtn.addEventListener('mouseenter', () => {
-        toggleBtn.style.transform = isOpen ? 'rotate(90deg) scale(1.05)' : 'scale(1.05)';
+        toggleBtn.style.transform = 'scale(1.05)';
         toggleBtn.style.backgroundColor = '#1e293b'; // slate-800
     });
     toggleBtn.addEventListener('mouseleave', () => {
-        toggleBtn.style.transform = isOpen ? 'rotate(90deg) scale(1)' : 'scale(1)';
+        toggleBtn.style.transform = 'scale(1)';
         toggleBtn.style.backgroundColor = '#0f172a';
     });
 
@@ -82,16 +81,12 @@
                 iframeContainer.style.opacity = '1';
                 iframeContainer.style.transform = 'translateY(0)';
             }, 10);
-            toggleBtn.innerHTML = openIconHTML;
-            toggleBtn.style.transform = 'rotate(90deg)';
         } else {
             iframeContainer.style.opacity = '0';
             iframeContainer.style.transform = 'translateY(10px)';
             setTimeout(() => {
                 iframeContainer.style.display = 'none';
             }, 300);
-            toggleBtn.innerHTML = closedIconHTML;
-            toggleBtn.style.transform = 'rotate(0deg)';
         }
     });
 
