@@ -109,6 +109,11 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
     }
   };
 
+  const handleMinimize = () => {
+    // Send a message to the parent window (widget.js) to close the iframe
+    window.parent.postMessage('MINIMIZE_CHAT', '*');
+  };
+
   const submitQuestion = async (questionText: string) => {
     if (!questionText.trim() || isLoading) return;
 
@@ -201,7 +206,11 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
           >
             <RotateCw size={18} strokeWidth={1.5} />
           </button>
-          <button className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-md transition-colors">
+          <button 
+            onClick={handleMinimize}
+            className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
+            title="Minimize Chat"
+          >
             <Minus size={20} strokeWidth={1.5} />
           </button>
         </div>
@@ -281,12 +290,11 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
                 </div>
                 
                 <div className="pl-8 w-full max-w-[95%]">
-                  {/* Info Notice */}
-                  <div className="flex items-start gap-2 mb-4 text-[#0f62fe]">
-                    <div className="mt-0.5 bg-[#0f62fe] rounded-full shrink-0">
-                      <Info size={16} className="text-white fill-current" />
-                    </div>
-                    <span className="text-[15px] text-slate-800">This is an AI generated response...</span>
+                  {/* AI Assistant Pill */}
+                  <div className="mb-3">
+                    <span className="px-2 py-1 bg-slate-100 text-slate-500 text-xs font-semibold rounded border border-slate-200">
+                      AI Assistant
+                    </span>
                   </div>
 
                   <div className="text-[15px] text-slate-800 leading-relaxed mb-4 whitespace-pre-wrap">

@@ -96,4 +96,11 @@
     container.appendChild(iframeContainer);
     container.appendChild(toggleBtn);
     document.body.appendChild(container);
+
+    // Listen for messages from the iframe
+    window.addEventListener('message', (event) => {
+        if (event.data === 'MINIMIZE_CHAT' && isOpen) {
+            toggleBtn.click(); // Trigger native collapse
+        }
+    });
 })();
