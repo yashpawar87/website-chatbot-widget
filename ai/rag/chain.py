@@ -89,6 +89,10 @@ def answer_question(question: str, history: list[dict] = None) -> dict:
     # Robust Fallback Quick Replies if LLM fails to generate them
     if not quick_replies or len(quick_replies) == 0:
         quick_replies = ["Can I speak to a human?", "What services do you offer?"]
+        
+    # Do not cite sources if the LLM could not find the answer in the context
+    if "couldn't find information" in answer.lower() or "encountered an error" in answer.lower():
+        sources = []
     
     return {
         "answer": answer,

@@ -23,7 +23,7 @@ interface ChatUIProps {
 
 // Onboarding Data configuration
 const ONBOARDING_DATA = {
-  greeting: "Hello! Welcome to Baellchen Technology. I can help you explore our advanced engineering solutions, check open career opportunities, or connect with our team. What brings you to our site today?",
+  greeting: "Welcome to Baellchen Technology! How can I help you today?",
   categories: [
     {
       title: "Explore Tech Solutions & Services",
@@ -194,9 +194,6 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
         </div>
         
         <div className="flex items-center gap-1">
-          <div className="px-1.5 py-0.5 border border-slate-300 rounded text-xs font-bold text-slate-700 mr-1">
-            AI
-          </div>
           <button 
             onClick={handleReset}
             className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
