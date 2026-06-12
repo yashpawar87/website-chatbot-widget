@@ -79,6 +79,7 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Auto-scroll to bottom
@@ -87,11 +88,25 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
   };
 
   useEffect(() => {
-    // Only auto-scroll when the user is waiting or expanding sources
-    if (isLoading) {
-      scrollToBottom();
+    // Scroll to bottom when waiting for AI or expanding sources
+    if (isLoading || Object.keys(expandedSources).length > 0) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [isLoading, expandedSources]);
+
+  useEffect(() => {
+    // When a new message is added
+    if (messages.length > 0) {
+      const lastMsg = messages[messages.length - 1];
+      if (lastMsg.role === "assistant" && !isLoading) {
+        // Scroll to the start of the assistant's message so the user can read from the beginning
+        lastMessageRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (lastMsg.role === "user") {
+        // Scroll to bottom for user messages
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [messages]);
 
   useEffect(() => {
     // Focus input on mount
@@ -288,8 +303,14 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
           </div>
         )}
 
-        {messages.map((msg, idx) => (
-          <div key={idx} className="flex flex-col w-full animate-in fade-in duration-300">
+        {messages.map((msg, idx) => {
+          const isLast = idx === messages.length - 1;
+          return (
+          <div 
+            key={idx} 
+            ref={isLast ? lastMessageRef : null}
+            className="flex flex-col w-full animate-in fade-in duration-300 scroll-mt-6"
+          >
             
             {msg.role === "user" ? (
               // User Message (Right aligned)
@@ -422,7 +443,7 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
               </div>
             )}
           </div>
-        ))}
+        )})}
         
         {/* Animated Typing Indicator */}
         {isLoading && (
