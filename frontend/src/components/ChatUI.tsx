@@ -87,8 +87,11 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, isLoading, expandedSources]);
+    // Only auto-scroll when the user is waiting or expanding sources
+    if (isLoading) {
+      scrollToBottom();
+    }
+  }, [isLoading, expandedSources]);
 
   useEffect(() => {
     // Focus input on mount
@@ -450,8 +453,8 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
       </div>
 
       {/* Input Area */}
-      <div className="bg-white border-t border-slate-200 z-10 shrink-0">
-        <form onSubmit={handleSubmit} className="relative flex items-center p-3">
+      <div className="bg-white border-t border-slate-100 z-10 shrink-0 p-2 sm:p-3">
+        <form onSubmit={handleSubmit} className="relative flex items-center bg-slate-50 border border-slate-200 rounded-full px-1 shadow-sm transition-all focus-within:border-[#0f62fe] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#0f62fe]/20">
           <input
             ref={inputRef}
             type="text"
@@ -460,7 +463,7 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
             placeholder="Type something..."
             disabled={isLoading}
             maxLength={500}
-            className="w-full pl-3 pr-12 py-3 bg-white focus:outline-none text-[15px] text-slate-800 placeholder-slate-400"
+            className="w-full pl-4 pr-12 py-2.5 bg-transparent focus:outline-none text-[14px] text-slate-800 placeholder-slate-400"
           />
           <button
             type="submit"
