@@ -70,6 +70,7 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
   
   // State for toggling sources accordions (keyed by message index)
   const [expandedSources, setExpandedSources] = useState<Record<number, boolean>>({});
@@ -86,6 +87,32 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // Load from local storage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("baellchen_chat_history");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Revive date objects
+        const revived = parsed.map((m: any) => ({
+          ...m,
+          timestamp: m.timestamp ? new Date(m.timestamp) : undefined
+        }));
+        setMessages(revived);
+      }
+    } catch (e) {
+      console.error("Failed to load chat history", e);
+    }
+    setIsInitialized(true);
+  }, []);
+
+  // Save to local storage when messages change
+  useEffect(() => {
+    if (isInitialized) {
+      localStorage.setItem("baellchen_chat_history", JSON.stringify(messages));
+    }
+  }, [messages, isInitialized]);
 
   useEffect(() => {
     // Scroll to bottom when waiting for AI or expanding sources
@@ -134,6 +161,7 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
       setExpandedReplies({});
       setSelectedCategory(null);
       setError(null);
+      localStorage.removeItem("baellchen_chat_history");
     }
   };
 
