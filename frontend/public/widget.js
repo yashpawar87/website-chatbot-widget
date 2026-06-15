@@ -53,11 +53,11 @@
     toggleBtn.style.width = '64px';
     toggleBtn.style.height = '64px';
     toggleBtn.style.borderRadius = '32px';
-    toggleBtn.style.backgroundColor = '#0f172a'; // slate-900
+    toggleBtn.style.backgroundColor = '#ea580c'; // orange-600
     toggleBtn.style.color = 'white';
     toggleBtn.style.border = 'none';
     toggleBtn.style.cursor = 'pointer';
-    toggleBtn.style.boxShadow = '0 4px 12px rgba(15, 23, 42, 0.4)';
+    toggleBtn.style.boxShadow = '0 4px 12px rgba(234, 88, 12, 0.4)';
     toggleBtn.style.display = 'flex';
     toggleBtn.style.alignItems = 'center';
     toggleBtn.style.justifyContent = 'center';
@@ -65,11 +65,11 @@
 
     toggleBtn.addEventListener('mouseenter', () => {
         toggleBtn.style.transform = 'scale(1.05)';
-        toggleBtn.style.backgroundColor = '#1e293b'; // slate-800
+        toggleBtn.style.backgroundColor = '#c2410c'; // orange-700
     });
     toggleBtn.addEventListener('mouseleave', () => {
         toggleBtn.style.transform = 'scale(1)';
-        toggleBtn.style.backgroundColor = '#0f172a';
+        toggleBtn.style.backgroundColor = '#ea580c';
     });
 
     let isOpen = false;
