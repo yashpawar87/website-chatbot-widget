@@ -1,8 +1,8 @@
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Literal
 
 class Message(BaseModel):
-    role: str
+    role: Literal["user", "assistant"]
     content: str
 
 class ChatRequest(BaseModel):

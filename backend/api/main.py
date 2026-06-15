@@ -1,3 +1,4 @@
+import os
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -6,10 +7,15 @@ from backend.config import backend_config
 
 logging.basicConfig(level=logging.INFO)
 
+is_dev = os.getenv("ENV", "production") != "production"
+
 app = FastAPI(
     title="Website RAG Chatbot API",
     description="API for the Website RAG Chatbot",
-    version="1.0.0"
+    version="1.0.0",
+    docs_url="/docs" if is_dev else None,
+    redoc_url="/redoc" if is_dev else None,
+    openapi_url="/openapi.json" if is_dev else None,
 )
 
 # Add CORS middleware for frontend communication
