@@ -13,7 +13,7 @@ llm = ChatGroq(
     model=ai_config.llm_model,
     api_key=ai_config.groq_api_key,
     temperature=0
-)
+).bind(response_format={"type": "json_object"})
 
 def format_docs(docs) -> str:
     return "\n\n".join(f"Source URL: {doc.metadata.get('url', 'Unknown')}\nContent: {doc.page_content}" for doc in docs)
