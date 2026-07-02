@@ -38,10 +38,20 @@ def answer_question(question: str, history: list[dict] = None) -> dict:
         logger.info("Chat history found. Condensing question...")
         formatted_history = format_chat_history(history)
         condense_chain = CONDENSE_QUESTION_PROMPT | llm | StrOutputParser()
-        search_query = condense_chain.invoke({
-            "chat_history": formatted_history,
-            "question": question
-        })
+        try:
+            search_query = condense_chain.invoke({
+                "chat_history": formatted_history,
+                "question": question
+            })
+        except Exception as e:
+            logger.error(f"Error condensing question: {e}")
+            if "429" in str(e) or "Too Many Requests" in str(e):
+                return {
+                    "answer": "I'm receiving too many questions right now! Please wait a minute and try again.",
+                    "sources": [],
+                    "quick_replies": []
+                }
+            search_query = question # fallback to raw question
         logger.info(f"Standalone search query: {search_query}")
     else:
         search_query = question
@@ -81,9 +91,12 @@ def answer_question(question: str, history: list[dict] = None) -> dict:
         answer = response_data.get("answer", "I'm sorry, I couldn't process that response.")
         quick_replies = response_data.get("quick_replies", [])
     except Exception as e:
-        logger.error(f"Failed to parse LLM JSON: {e}")
-        # Fallback if LLM outputs invalid JSON or hallucinates
-        answer = "I apologize, but I encountered an error formatting my response."
+        logger.error(f"Failed to generate or parse LLM response: {e}")
+        # Handle rate limits specifically
+        if "429" in str(e) or "Too Many Requests" in str(e):
+            answer = "I'm receiving too many questions right now! Please wait a minute and try again."
+        else:
+            answer = "I apologize, but I encountered an error formatting my response."
         quick_replies = []
         
     # Robust Fallback Quick Replies if LLM fails to generate them
@@ -91,7 +104,7 @@ def answer_question(question: str, history: list[dict] = None) -> dict:
         quick_replies = ["Can I speak to a human?", "What services do you offer?"]
         
     # Do not cite sources if the LLM could not find the answer in the context
-    if "couldn't find a reliable answer" in answer.lower() or "encountered an error" in answer.lower() or "couldn't find information" in answer.lower():
+    if "couldn't find a reliable answer" in answer.lower() or "don't have that specific information" in answer.lower() or "encountered an error" in answer.lower() or "couldn't find information" in answer.lower():
         sources = []
     
     return {

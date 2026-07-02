@@ -194,13 +194,16 @@ export default function ChatUI({ isWidget = false }: ChatUIProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           question: userMessage.content,
-          history: currentHistory.map(m => ({ role: m.role, content: m.content }))
+          history: currentHistory.slice(-10).map(m => ({ role: m.role, content: m.content }))
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || "Failed to get response");
+        const errorMessage = typeof errorData.detail === 'string' 
+          ? errorData.detail 
+          : (Array.isArray(errorData.detail) && errorData.detail[0]?.msg ? errorData.detail[0].msg : "Failed to get response");
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();

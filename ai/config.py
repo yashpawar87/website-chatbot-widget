@@ -8,7 +8,7 @@ class AIConfig(BaseSettings):
     groq_api_key: str = ""
     embedding_model: str = "BAAI/bge-small-en-v1.5"
     embedding_dim: int = 384
-    llm_model: str = "llama-3.3-70b-versatile"
+    llm_model: str = "llama3-8b-8192"
     chunk_size: int = 1000
     chunk_overlap: int = 150
     qdrant_path: str = "data/qdrant_index"
